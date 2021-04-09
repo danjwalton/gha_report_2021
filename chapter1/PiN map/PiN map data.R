@@ -1,20 +1,22 @@
 required.packages <- c("data.table","jsonlite","httr","readxl")
 lapply(required.packages, require, character.only=T)
 
-setwd("G:/My Drive/Work/GitHub/gha_report_2021/")
+setwd("G:/My Drive/Work/GitHub/gha_report_2021_git/")
 
 ###This map shows:###
 #- The total number of PiN by country
 #- The types of crises affecting each country (displacement, conflict, natural/technological hazard)
 #- The INFORM severity score
 #- The COVID-19 risk score
+#- Vaccine rollout
 #- Protracted crisis countries
 #- HRP requirements
 #- RRP requirements
 
 ##Total PiN##
 acaps <- fread("datasets/ACAPS/ACAPS_PiN.csv")
-pin.by.country <- acaps[year == 2020 & country_level == "Yes", .(Total.PiN = max(Total.PiN)), by = .(iso3_flat, country_flat)]
+pin.by.country <- acaps[year == 2020 & country_level == "Yes", .(iso3 = iso3_flat, Total.PiN = max(Total.PiN)), by = .(iso3_flat)]
+pin.by.country[, iso3_flat := NULL]
 
 ##Crises by country##
 countrynames <- fread("datasets/Countrynames/isos.csv", encoding = "UTF-8")
@@ -30,8 +32,8 @@ pop <- merge(countrynames[,c("iso3", "countryname", "countryname_un")], pop, by.
 em.dat <- merge(em.dat[Year == 2020, .(Affected = sum(`Total Affected`, na.rm = T)/1000), by = ISO], pop, by.x = "ISO", by.y = "iso3", all.x = T)
 em.dat <- em.dat[, .(share_affected = Affected/PopTotal), by = ISO]
 
-physical <- merge(crises.by.country[,c("iso3_flat", "Physical")], em.dat, by.x = "iso3_flat", by.y = "ISO", all.x = T)
-physical_isos <- physical[share_affected > min(physical[Physical > 0]$share_affected, na.rm = T) | Physical > 0]$iso3_flat #Countries with share of pop affected over the minimum already flagged as physical, plus those already flagged
+physical <- merge(crises.by.country[,c("iso3", "Physical")], em.dat, by.x = "iso3", by.y = "ISO", all.x = T)
+physical_isos <- physical[share_affected > min(physical[Physical > 0]$share_affected, na.rm = T) | Physical > 0]$iso3 #Countries with share of pop affected over the minimum already flagged as physical, plus those already flagged
 rm(list = c("pop", "physical", "em.dat"))
 
 #Conflict
@@ -41,28 +43,33 @@ hiik$countries <- gsub(" – ", ", ", hiik$countries)
 
 conflict <- hiik[, .(country = unlist(strsplit(countries, ", "))), by = intensity_2020][, .(max_intensity_2020 = max(intensity_2020)), by = country]
 conflict <- merge(conflict, countrynames[,c("iso3", "countryname_hiik")], by.x = "country", by.y = "countryname_hiik", all.x = T)
-conflict <- merge(conflict, crises.by.country, by.x = "iso3", by.y = "iso3_flat", all.x = T)
+conflict <- merge(conflict, crises.by.country, by = "iso3", all.x = T)
 conflict_isos <- conflict[max_intensity_2020 >= 4 | Conflict > 0]$iso3
 rm(list = c("hiik", "conflict"))
 
 #Displacement
-displacement_isos <- crises.by.country[Displacement > 0]$iso3_flat
+displacement_isos <- crises.by.country[Displacement > 0]$iso3
 
 #All types
 all.crises <- data.table(iso3 = crises.by.country$iso3)[, .(physical_flag = ifelse(iso3 %in% physical_isos, 1, 0), conflict_flag = ifelse(iso3 %in% conflict_isos, 1, 0), displacement_flag = ifelse(iso3 %in% displacement_isos, 1, 0)), by = iso3]
 
-all.crises <- merge(pin.by.country, all.crises, by.x = "iso3_flat", by.y = "iso3", all = T)
+all.crises <- merge(pin.by.country, all.crises, by = "iso3", all = T)
 
 ##INFORM severity##
 inform <- data.table(read_excel("datasets/INFORM/INFORM2021_TREND_2011_2020_v051_ALL.xlsx"))
 inform <- inform[INFORMYear == 2020 & IndicatorName == "INFORM Risk Index"]
-inform <- inform[, .(risk_class = ifelse(IndicatorScore >= 2, ifelse(IndicatorScore >= 3.5, ifelse(IndicatorScore >= 5, ifelse(IndicatorScore >= 6.5, "Very High", "High"), "Medium"), "Low"), "Very Low")), by = Iso3]
+inform <- inform[, .(iso3 = Iso3, risk_class = ifelse(IndicatorScore >= 2, ifelse(IndicatorScore >= 3.5, ifelse(IndicatorScore >= 5, ifelse(IndicatorScore >= 6.5, "Very High", "High"), "Medium"), "Low"), "Very Low"))]
 
 ##COVID-19 risk##
 inform_covid <- head(tail(data.table(read_excel("datasets/INFORM/INFORM COVID-19 RISK INDEX v014.xlsx", sheet = "INFORM COVID-19 RISK 2020 (a-z)", skip = 1)), -1), -3)
-inform_covid <- inform_covid[, .(covid_risk_class = `COVID-19 RISK CLASS`), by = "ISO3"]
+inform_covid <- inform_covid[, .(iso3 = ISO3, covid_risk_class = `COVID-19 RISK CLASS`)]
+
+##Vaccine rollout##
+vac_share <- fread("datasets/OWID/vaccination_shares.csv")
+vac_share[, c("iso3", "vac_share")]
 
 ##Protracted crisis countries##
+
 
 ##HRP requirements##
 hrps <- fread("datasets/FTS/HRP requirements_RRP_sep.csv", encoding = "UTF-8")
@@ -78,3 +85,11 @@ rrps <- merge(rrps, countrynames[, c("iso3", "countryname_unhcr")], by.x = "Coun
 
 rrps <- rrps[!is.na(iso3), .(rrp_funding = sum(as.numeric(`Funds Received`)/1000000, na.rm = T), rrp_requirements = sum(as.numeric(`Funds Requested`)/1000000, na.rm = T)), by = iso3]
 
+###Join all
+
+all.crises <- merge(all.crises, inform, all.x = T)
+all.crises <- merge(all.crises, inform_covid, all.x = T)
+all.crises <- merge(all.crises, vac_share, all.x = T)
+#all.crises <- merge(all.crises, protracted_crises, all.x = T)
+all.crises <- merge(all.crises, hrps, all.x = T)
+all.crises <- merge(all.crises, rrps, all.x = T)
