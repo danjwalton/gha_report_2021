@@ -1,4 +1,4 @@
-required.packages <- c("data.table")
+required.packages <- c("data.table", "readxl")
 lapply(required.packages, require, character.only = T)
 
 setwd("G:/My Drive/Work/GitHub/gha_report_2021/")
@@ -179,4 +179,9 @@ crs[DRR == "2"]$DRR <- "Major DRR component"
 
 crs_drr <- crs[!is.na(USD_Disbursement_Defl) & ((relevance != "None" & check == "No") | DRR != "No DRR component")]
 
-fwrite(crs_drr, )
+inform <- data.table(read_excel("datasets/INFORM/INFORM2021_TREND_2011_2020_v051_ALL.xlsx"))
+inform <- inform[IndicatorName == "Natural Hazard" & INFORMYear == 2021]
+
+countrynames <- fread("datasets/Countrynames/isos.csv", encoding = "UTF-8")
+crs_drr <- merge(countrynames[,c("iso3", "countryname_oecd")], crs_drr, by.x = "countryname_oecd", by.y = "RecipientName", all.y = T)
+crs_drr <- merge(crs_drr, inform[,c("Iso3", "IndicatorScore")], by.x = "iso3", by.y = "Iso3", all.x = T)
