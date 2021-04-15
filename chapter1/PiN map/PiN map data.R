@@ -1,7 +1,7 @@
 required.packages <- c("data.table","jsonlite","httr","readxl")
 lapply(required.packages, require, character.only=T)
 
-setwd("G:/My Drive/Work/GitHub/gha_report_2021_git/")
+setwd("G:/My Drive/Work/GitHub/gha_report_2021/")
 
 ###This map shows:###
 #- The total number of PiN by country
@@ -66,7 +66,7 @@ inform_covid <- inform_covid[, .(iso3 = ISO3, covid_risk_class = `COVID-19 RISK 
 
 ##Vaccine rollout##
 vac_share <- fread("datasets/OWID/vaccination_shares.csv")
-vac_share[, c("iso3", "vac_share")]
+vac_share <- vac_share[, c("iso3", "vac_share")]
 
 ##Protracted crisis countries##
 

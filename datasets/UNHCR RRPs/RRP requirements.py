@@ -19,9 +19,9 @@ from selenium.webdriver.common.keys import Keys
 ###
 
 script_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
-chromedriver_dir = script_dir + '/chromedriver/chromedriver.exe'
-chrome_dir = script_dir + '/chromedriver/bin/chrome.exe'
+chromedriver_path = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+chromedriver_dir = chromedriver_path + '/utilities/chromedriver/chromedriver.exe'
+chrome_dir = chromedriver_path + '/utilities/chromedriver/bin/chrome.exe'
 
 chrome_options = webdriver.ChromeOptions()
 chrome_options.binary_location = chrome_dir
