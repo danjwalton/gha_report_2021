@@ -41,10 +41,22 @@ hiik <- fread("datasets/HIIK/HIIK_CoBa_2020_dataset.csv", encoding = "UTF-8")
 hiik$countries <- gsub(" [(].*| et al[.]| et[.] al|°","", hiik$conflict)
 hiik$countries <- gsub(" – ", ", ", hiik$countries)
 
-conflict <- hiik[, .(country = unlist(strsplit(countries, ", "))), by = intensity_2020][, .(max_intensity_2020 = max(intensity_2020)), by = country]
+conflict <- hiik[, .(country = unlist(strsplit(countries, ", "))), by = .(type, intensity_2020)][, .(max_intensity_2020 = max(intensity_2020)), by = .(country, type)]
 conflict <- merge(conflict, countrynames[,c("iso3", "countryname_hiik")], by.x = "country", by.y = "countryname_hiik", all.x = T)
-conflict <- merge(conflict, crises.by.country, by = "iso3", all.x = T)
-conflict_isos <- conflict[max_intensity_2020 >= 4 | Conflict > 0]$iso3
+
+max.country.conflict <- conflict[, .SD[which.max(max_intensity_2020)], by = .(country, iso3)]
+non.max.country.conflict <- conflict[, .SD[!which.max(max_intensity_2020)], by = .(country, iso3)]
+
+max.country.conflict <- merge(max.country.conflict, crises.by.country[Conflict > 0, c("iso3", "Conflict")], by = "iso3", all = T)
+max.country.conflict <- unique(max.country.conflict[max_intensity_2020 >= 4 | Conflict > 0])
+non.max.country.conflict <- unique(non.max.country.conflict[max_intensity_2020 >= 4])
+
+conflict <- rbind(max.country.conflict, non.max.country.conflict, fill = T)
+
+international.conflict_isos <- unique(conflict[type %in% c("interstate", "transstate")]$iso3)
+national.conflict_isos <- unique(conflict[type %in% c("substate", "intrastate")]$iso3)
+conflict_isos <- unique(conflict$iso3)
+
 rm(list = c("hiik", "conflict"))
 
 #Displacement

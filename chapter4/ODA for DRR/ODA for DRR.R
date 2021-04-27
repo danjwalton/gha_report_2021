@@ -185,3 +185,5 @@ inform <- inform[IndicatorName == "Natural Hazard" & INFORMYear == 2021]
 countrynames <- fread("datasets/Countrynames/isos.csv", encoding = "UTF-8")
 crs_drr <- merge(countrynames[,c("iso3", "countryname_oecd")], crs_drr, by.x = "countryname_oecd", by.y = "RecipientName", all.y = T)
 crs_drr <- merge(crs_drr, inform[,c("Iso3", "IndicatorScore")], by.x = "iso3", by.y = "Iso3", all.x = T)
+
+fwrite(crs_drr, "chapter4/ODA for DRR/crs_ddr.csv")
