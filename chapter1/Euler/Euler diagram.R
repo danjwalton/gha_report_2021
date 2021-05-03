@@ -1,4 +1,4 @@
-required.packages <- c("data.table","jsonlite","httr","readxl","euler_dtr")
+required.packages <- c("data.table","jsonlite","httr","readxl","eulerr")
 lapply(required.packages, require, character.only=T)
 
 setwd("G:/My Drive/Work/GitHub/gha_report_2021/")
@@ -63,10 +63,14 @@ setnames(nonipc, c("CountryCode", "variable"), c("iso3", "poor"))
 euler_dt <- rbind(ipc, nonipc)
 
 ##Risk of natural hazards##
+
+emdat <- data.table(read_excel("datasets/EMDAT/emdat_public_2021_03_30_query_uid-dsfpkn.xlsx", skip = 6))
+emdat <- emdat[Year == 2020, .(Affected = sum(`Total Affected`, na.rm = T)), by = ISO]
+
 inform <- data.table(read_excel("datasets/INFORM/INFORM2021_TREND_2011_2020_v051_ALL.xlsx"))
 inform_nh <- inform[INFORMYear == 2020 & IndicatorName == "Natural Hazard"]
 
-env_isos <- inform_nh[IndicatorScore >= 4.7]$Iso3
+env_isos <- inform_nh[IndicatorScore >= 6.9]$Iso3
 
 euler_dt[, vuln := ifelse(iso3 %in% env_isos, "vuln", "nonvuln")]
 
@@ -74,8 +78,10 @@ euler_dt[, vuln := ifelse(iso3 %in% env_isos, "vuln", "nonvuln")]
 oecd_sof <- as.data.table(read_excel("datasets/OECD SoF/List of Fragile Contexts (2020).xlsx"))
 
 fragile_isos <- oecd_sof$iso3c
+exfragile_isos <- oecd_sof[fragility.level == "Extremely Fragile"]$iso3c
 
 euler_dt[, fragile := ifelse(iso3 %in% fragile_isos, "fragile", "nonfragile")]
+euler_dt[, exfragile := ifelse(iso3 %in% exfragile_isos, "exfragile", "nonexfragile")]
 
 ##COVID-19 risk##
 inform_covid <- head(tail(data.table(read_excel("datasets/INFORM/INFORM COVID-19 RISK INDEX v014.xlsx", sheet = "INFORM COVID-19 RISK 2020 (a-z)", skip = 1)), -1), -3)
@@ -85,15 +91,25 @@ covid_isos <- inform_covid[covid_risk_class %in% c("Very High", "High")]$iso3
 
 euler_dt[, covid := ifelse(iso3 %in% covid_isos, "covid", "noncovid")]
 
-##Overall euler_dt##
+##Overall euler##
 rm(list = ls()[ls() != "euler_dt"])
 
-euler_dt <- euler_dt[, .(value = sum(value)), by = .(poor, ipc, vuln, fragile, covid)]
+euler_dt <- euler_dt[, .(value = sum(value)), by = .(poor, ipc, vuln, fragile, exfragile, covid)]
+euler_tf <- euler_dt[, lapply(.SD, function(x) ifelse(grepl("non.*", x), F, T)), by = value]
 
-euler1 <- euler(c(poor = sum(euler_dt[poor == "poor" & vuln != "vuln" & fragile != "fragile"]$value), vuln = sum(euler_dt[vuln == "vuln" & poor != "poor" & fragile != "fragile"]$value), fragile = sum(euler_dt[fragile == "fragile" & vuln != "vuln" & poor != "poor"]$value),
-                  "poor&vuln" = sum(euler_dt[poor == "poor" & vuln == "vuln" & fragile != "fragile"]$value), "poor&fragile" = sum(euler_dt[poor == "poor" & fragile == "fragile" & vuln != "vuln"]$value), "vuln&fragile" = sum(euler_dt[vuln == "vuln" & fragile == "fragile" & poor != "poor"]$value),
-                  "poor&vuln&fragile" = sum(euler_dt[poor == "poor" & vuln == "vuln" &fragile == "fragile"]$value)))
+euler_sel <- function(data = euler_tf, value_col = "value", params = c("poor", "fragile", "covid"), control = list(T, 0), shape = "circle"){
+  euler_a <- data[, c(params, value_col), with=F]
+  euler_a <- euler_a[, .(values = sum(.SD)), by = params, .SDcols = value_col]
+  values <- euler_a$values
+  euler_a[, values := NULL]
+  fit <- euler(euler_a, weights = values, control = control, shape = shape)
+  return(fit)
+}
 
-euler2 <- euler(c(poor = sum(euler_dt[poor == "poor" & covid != "covid" & ipc != "ipc"]$value), covid = sum(euler_dt[covid == "covid" & poor != "poor" & ipc != "ipc"]$value), ipc = sum(euler_dt[ipc == "ipc" & covid != "covid" & poor != "poor"]$value),
-                  "poor&covid" = sum(euler_dt[poor == "poor" & covid == "covid" & ipc != "ipc"]$value), "poor&ipc" = sum(euler_dt[poor == "poor" & ipc == "ipc" & covid != "covid"]$value), "covid&ipc" = sum(euler_dt[covid == "covid" & ipc == "ipc" & poor != "poor"]$value),
-                  "poor&covid&ipc" = sum(euler_dt[poor == "poor" & covid == "covid" &ipc == "ipc"]$value)))
+euler1 <- euler_sel(euler_tf[poor == T], params = c("poor", "fragile", "vuln"))
+euler2 <- euler_sel(params = c("poor", "ipc", "covid"))
+euler3 <- euler_sel(euler_tf[poor == T], params = c("poor", "fragile", "ipc"))
+
+euler4 <- euler_sel(params = c("poor", "fragile", "vuln", "covid"))
+euler5 <- euler_sel(params = c("poor", "fragile", "vuln", "covid", "ipc"), shape = "ellipse")
+euler6 <- euler_sel(params = c("covid", "exfragile", "poor"))
