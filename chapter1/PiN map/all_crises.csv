@@ -1,0 +1,76 @@
+iso3,countryname,Total.PiN,severity_max,physical_flag,conflict_flag,displacement_flag,PopTotal,risk_class,covid_risk_class,protracted_crisis_flag,consecutive_crisis_years,hrp_funding,hrp_requirements,rrp_funding,rrp_requirements
+AFG,Afghanistan,14,4,1,1,1,38.928341,Very High,Very High,1,13,564.467765,1131.05082,0,0
+ARM,Armenia,0,0,1,1,0,2.963234,Low,Medium,0,0,0,0,0,0
+AZE,Azerbaijan,0,0,0,1,0,10.139175,Medium,Medium,0,0,0,0,0,0
+BDI,Burundi,1.7,4,1,0,0,11.890781,High,Very High,1,5,89.424386,197.893,12.428599,51.32144
+BFA,Burkina Faso,2.22,5,1,1,0,20.903278,High,High,1,17,258.211323,424.357861,0,0
+BGD,Bangladesh,3,4,1,0,1,164.689383,High,High,1,5,687.196571,1264.027556,0,0
+BHS,Bahamas (the),0.01,2,1,0,0,0.393248,Low,Medium,0,0,0,0,0,0
+BRA,Brazil,0.26,3,0,1,1,212.559409,Medium,Medium,0,3,0,0,0,88.208864
+CAF,Central African Republic,2.8,4,1,1,1,4.829764,Very High,Very High,1,18,385.389185,553.62229,1.361619,0
+CHN,China,0,2,1,0,0,1439.323774,Medium,Low,0,0,0,0,0,0
+CMR,Cameroon,3.45,4,1,1,1,26.545864,High,High,1,7,195.312683,390.920124,28.292794,60.971204
+COD,Congo (the Democratic Republic of the),23.43,4,1,1,1,89.561404,Very High,Very High,1,21,835.533095,2069.13482,30.240253,78.011178
+COG,Congo (the),0,3,1,1,1,5.518092,High,High,1,7,1.679525,11.989124,3.349396,15.420276
+COL,Colombia,8.87,4,1,1,1,50.882884,High,Medium,0,3,62.905443,493.620647,0,739.209993
+CRI,Costa Rica,0.04,2,0,0,1,5.094114,Low,Low,0,0,0,0,0,739.209993
+DJI,Djibouti,0.31,4,1,0,1,0.988002,High,High,0,1,8.651838,44.235312,0,0
+DZA,Algeria,0,3,0,0,1,43.851043,Medium,Medium,0,0,0,0,0,0
+ECU,Ecuador,0.63,3,0,0,1,17.64306,Medium,Medium,0,3,19.852674,46.425,0,739.209993
+EGY,Egypt,0.13,2,0,1,1,102.334403,High,Medium,1,8,0,0,0,169.085254
+ERI,Eritrea,2.58,3,0,1,0,3.546427,High,High,0,0,0,0,0,0
+ESP,Spain,0,0,0,0,0,46.754783,Low,Low,0,0,0,0,0,0
+ETH,Ethiopia,8.86,5,1,1,1,114.963583,Very High,High,1,7,741.623882,1250.804122,39.135493,374.917926
+GRC,Greece,0.08,3,0,0,1,10.423056,Low,Low,0,0,0,0,0,0
+GTM,Guatemala,3.3,3,1,0,1,17.915567,High,Medium,0,0,0,0,0,0
+HND,Honduras,1.3,3,1,0,0,9.904608,High,Medium,0,0,0,0,0,0
+HTI,Haiti,4.1,4,1,0,0,11.402533,High,Very High,1,11,155.390399,471.993035,0,0
+IDN,Indonesia,0.05,2,1,1,0,273.523621,Medium,Medium,0,0,0,0,0,0
+IND,India,1.83,3,1,1,0,1380.004385,High,Medium,0,0,0,0,0,0
+IRN,Iran (Islamic Republic of),2.95,4,1,0,1,83.992953,High,Medium,0,2,73.96872,117.284681,0,0
+IRQ,Iraq,4.3,4,0,1,1,40.222503,Very High,Medium,1,9,624.995961,784.264123,0,293.662566
+ITA,Italy,0,0,0,0,0,60.461828,Low,Low,0,0,0,0,0,0
+JOR,Jordan,0.64,3,0,0,1,10.20314,Medium,Medium,1,9,18.60428,52.845731,0,1475.421995
+KEN,Kenya,3.59,3,1,1,1,53.7713,High,High,1,13,62.447872,254.870684,30.351444,106.047199
+LBN,Lebanon,3.77,4,1,0,1,6.825442,High,High,1,9,285.634651,333.109142,0,2353.693579
+LBY,Libya,1.07,4,0,1,1,6.871287,Very High,Medium,1,6,118.841538,129.846005,0,0
+LSO,Lesotho,0.58,4,1,0,0,2.142252,Medium,High,0,1,13.733857,33.745,0,0
+MAR,Morocco,0,0,0,0,1,36.910558,Medium,Medium,0,0,0,0,0,0
+MDG,Madagascar,0.73,3,1,0,0,27.691019,High,High,0,0,0,0,0,0
+MEX,Mexico,0,1,1,1,1,128.932753,High,Medium,0,0,0,0,0,739.209993
+MLI,Mali,4.3,3,1,1,1,20.250834,Very High,High,1,17,229.208923,474.29218,0,0
+MMR,Myanmar,0.98,4,0,1,0,54.409794,High,Medium,1,8,187.179252,275.3,0,0
+MOZ,Mozambique,1.91,3,1,1,1,31.255435,High,High,0,2,107.272627,113.708088,0,0
+MRT,Mauritania,0.68,3,1,0,1,4.64966,High,High,0,0,0,0,0,0
+MWI,Malawi,2.62,3,1,0,0,19.129955,Medium,High,0,0,0,0,0,0
+NAM,Namibia,0.44,3,1,0,0,2.540916,Medium,High,0,0,0,0,0,0
+NER,Niger (the),3.7,4,1,1,1,24.206636,Very High,High,1,16,384.466927,516.074957,24.829531,104
+NGA,Nigeria,9.39,4,1,1,1,206.139587,Very High,High,1,7,622.470557,1080.446613,0,0
+NIC,Nicaragua,0,2,1,0,0,6.624554,High,Medium,0,0,0,0,0,0
+PAK,Pakistan,3.04,2,1,1,0,220.892331,High,High,1,5,89.576883,145.788878,0,0
+PER,Peru,0.89,3,0,0,1,32.971846,Medium,Medium,0,0,0,0,0,136.525462
+PHL,Philippines (the),4.1,3,1,1,0,109.581085,High,Medium,0,1,20.562507,121.767344,0,0
+PRK,Korea (the Democratic People's Republic of),10.9,4,1,0,0,25.778815,High,Medium,1,6,32.23561,146.692162,0,0
+PSE,"Palestine, State of",2.5,4,0,1,0,5.101416,High,High,1,18,295.086325,420.381684,0,0
+RWA,Rwanda,0.15,2,1,0,1,12.952209,Medium,High,1,6,0,0,34.957304,151.149293
+SDN,Sudan (the),9.3,5,1,1,1,43.849269,Very High,High,1,21,868.251204,1633.403129,158.132237,360.406117
+SEN,Senegal,0.51,2,1,0,0,16.74393,Medium,High,0,0,0,0,0,0
+SLV,El Salvador,0.64,3,0,0,0,6.486201,Medium,Medium,0,0,0,0,0,0
+SOM,Somalia,5.3,5,1,1,1,15.893219,Very High,Very High,1,21,830.259335,1009.926527,0,0
+SSD,South Sudan,7.2,4,1,1,1,11.193729,Very High,Very High,1,10,1234.467775,1900.799964,0,0
+SWZ,Swaziland,0.37,4,1,0,0,1.160164,Medium,High,0,0,0,0,0,0
+SYR,Syrian Arab Republic,11.71,5,1,1,1,17.500657,Very High,Medium,1,9,2224.563879,3817.532832,0,0
+TCD,Chad,6.4,4,1,1,1,16.425859,Very High,Very High,1,17,288.39795,664.64116,11.479728,15.721987
+THA,Thailand,0.09,3,0,1,1,69.799978,Medium,Medium,0,0,0,0,0,0
+TTO,Trinidad and Tobago,0.06,1,0,0,1,1.399491,Low,Medium,0,0,0,0,0,14.273376
+TUN,Tunisia,0,0,0,0,1,11.818618,Low,Medium,0,0,0,0,0,0
+TUR,Turkey,2.66,3,0,1,1,84.339067,High,Medium,1,9,0,0,0,1302.41856
+TZA,"Tanzania, United Republic of",0.29,1,1,0,1,59.734213,High,High,1,7,19.017877,158.874105,86.852035,258.87873
+UGA,Uganda,1.69,3,1,0,1,45.741,Very High,High,1,7,29.951056,200.157127,202.185342,849.045811
+UKR,Ukraine,3.5,4,0,1,0,43.733759,Medium,Medium,1,7,128.071981,204.653234,0,0
+VEN,Venezuela (Bolivarian Republic of),14.32,3,0,0,1,28.435943,Medium,Medium,0,3,164.122246,762.509363,0,0
+VNM,Viet Nam,0.18,2,1,0,0,97.338583,Medium,Medium,0,0,0,0,0,0
+VUT,Vanuatu,0,3,1,0,0,0.30715,Medium,High,0,0,0,0,0,0
+YEM,Yemen,24.16,4,1,1,1,29.825968,Very High,High,1,13,1948.438615,3382.681703,0,0
+ZMB,Zambia,2.28,3,1,0,0,18.383956,Medium,High,0,3,41.165752,215.149947,10.41596,74.832609
+ZWE,Zimbabwe,7,3,1,0,1,14.862927,High,High,0,2,209.826383,800.770933,0,0

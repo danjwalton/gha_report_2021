@@ -6,7 +6,9 @@ setwd("G:/My Drive/Work/GitHub/gha_report_2021/")
 isos <- fread("datasets/Countrynames/isos.csv")
 
 ##Poverty##
-poverty <- fread("datasets/Poverty/globalproj_long_Apr21.csv")
+poverty <- fread("datasets/Poverty/globalproj_long_May21.csv")
+
+global_poverty <- poverty[PovertyLine == 1.9 & Level == "Global"]
 poverty <- poverty[PovertyLine == 1.9 & Level == "National"]
 
 poverty <- dcast(poverty, CountryCode + ProjYear ~ variable, value.var = "value")
@@ -39,13 +41,13 @@ fragile_pov <- poverty[ProjYear >= 2010 & ProjYear <= 2020, .(NumPoor = sum(NumP
 fwrite(fragile_pov, "chapter1/Fragile poverty/fragile_pov.csv")
 
 #Internal
-euler3 <- euler(c(expoor = sum(fragile_pov[ProjYear == 2010]$NumPoor),
+euler3 <- euler(c(expoor = global_poverty[ProjYear == 2010 & variable == "NumPoor"]$value,
                   fragile = sum(fragile_pov[ProjYear == 2010 & fragile == "con.fragile"]$NumPoor),
                   "expoor&fragile" = sum(fragile_pov[ProjYear == 2010 & fragile == "con.fragile"]$NumPoor)),
                 input = "union")
 
 euler4_covid <- euler(c(
-  expoor = sum(fragile_pov[ProjYear == 2020]$NumPoor),
+  expoor = global_poverty[ProjYear == 2020 & variable == "NumPoor"]$value,
   fragile = sum(fragile_pov[ProjYear == 2020 & fragile == "con.fragile"]$NumPoor),
   covid = sum(fragile_pov[ProjYear == 2020 & covid == "covid"]$NumPoor),
   "expoor&fragile" = sum(fragile_pov[ProjYear == 2020 & fragile == "con.fragile"]$NumPoor),
@@ -55,10 +57,10 @@ euler4_covid <- euler(c(
 )
 , input = "union")
 
-labels3 <- c(expoor = sum(fragile_pov[ProjYear == 2010]$NumPoor), fragile = sum(fragile_pov[ProjYear == 2010 & fragile == "con.fragile"]$NumPoor), "expoor&fragile" = sum(fragile_pov[ProjYear == 2010 & fragile == "con.fragile"]$NumPoor))
+labels3 <- c(expoor = global_poverty[ProjYear == 2010 & variable == "NumPoor"]$value, fragile = sum(fragile_pov[ProjYear == 2010 & fragile == "con.fragile"]$NumPoor), "expoor&fragile" = sum(fragile_pov[ProjYear == 2010 & fragile == "con.fragile"]$NumPoor))
 
 labels4_covid <- c(
-  expoor = sum(fragile_pov[ProjYear == 2020]$NumPoor),
+  expoor = global_poverty[ProjYear == 2020 & variable == "NumPoor"]$value,
   fragile = sum(fragile_pov[ProjYear == 2020 & fragile == "con.fragile"]$NumPoor),
   covid = sum(fragile_pov[ProjYear == 2020 & covid == "covid"]$NumPoor),
   "expoor&fragile" = sum(fragile_pov[ProjYear == 2020 & fragile == "con.fragile"]$NumPoor),

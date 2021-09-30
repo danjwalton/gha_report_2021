@@ -3,6 +3,11 @@ lapply(required.packages, require, character.only=T)
 
 setwd("G:/My Drive/Work/GitHub/gha_report_2021/")
 
+countrynames <- fread("datasets/Countrynames/isos.csv", encoding = "UTF-8")
+pcc <- as.data.table(read_excel("datasets/PCC/Protracted Response, 2000-2021.xlsx", sheet = "Calcs."))
+pcc <- pcc[, -c(3:24)]
+pcc <- merge(pcc, countrynames[, c("iso2", "iso3")], by.x = "Country ID", by.y = "iso2", all.x = T)
+
 ###Projected vaccine rollout is crises countries###
 
 vac.pd <- fread("datasets/OWID/vaccination_per_day.csv")
@@ -36,3 +41,11 @@ vac.linear.proj <- vac.pd[!is.na(smooth_vac_share), .(date = approxExtrap(date, 
 plot.proj <- function(data = vac.linear.proj, iso){
   plot(data[iso3 == iso]$date, data[iso3 == iso]$vac_share)
 }
+
+###
+vac.utd <- fread("datasets/OWID/vaccination_shares.csv")
+
+vac.utd <- merge(vac.utd[iso3 %in% countrynames$iso3], pcc[, .(iso3, `Protracted Crisis in 2020`)], all.x = T)
+vac.utd[is.na(`Protracted Crisis in 2020`), `Protracted Crisis in 2020` := "No"]
+
+vac.shares <- vac.utd[, .(wavg_share = sum(vac_num)/sum(vac_num/(vac_share/100)), avg_share = mean(vac_share/100)), by = "Protracted Crisis in 2020"]

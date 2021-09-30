@@ -56,7 +56,7 @@ crs <- crs[
     FlowName == "Private Development Finance"
   ]
 
-crs <- crs[Year >= 2019]
+crs <- crs[Year >= 2018]
 
 major.keywords <- c(
   "anti-seismic adaption",
@@ -177,7 +177,7 @@ crs[DRR != "1" & DRR != "2"]$DRR <- "No DRR component"
 crs[DRR == "1"]$DRR <- "Minor DRR component"
 crs[DRR == "2"]$DRR <- "Major DRR component"
 
-crs[, .(Primary_DRR := ifelse(relevance == "Major" | DRR == "Major DRR component" | PurposeName == "Disaster Risk Reduction", "Primary", NA))]
+crs[, Primary_DRR := ifelse(relevance == "Major" | DRR == "Major DRR component" | PurposeName == "Disaster Risk Reduction", "Primary", NA_character_)]
 
 inform <- data.table(read_excel("datasets/INFORM/INFORM2021_TREND_2011_2020_v051_ALL.xlsx"))
 inform <- inform[IndicatorName == "Natural Hazard" & INFORMYear == 2021]
@@ -187,7 +187,7 @@ crs <- merge(countrynames[,c("iso3", "countryname_oecd")], crs, by.x = "countryn
 crs <- merge(crs, inform[,c("Iso3", "IndicatorScore")], by.x = "iso3", by.y = "Iso3", all.x = T)
 crs[, hazard_class := ifelse(IndicatorScore >= 6.9, "Very High", ifelse(IndicatorScore >= 4.7, "High", ifelse(IndicatorScore >= 2.8, "Medium", "Low")))]
 
-crs_total <- crs[, .(total_oda = sum(USD_Disbursement_Defl, na.rm = T)), by = iso3]
+crs_total <- crs[, .(drr_oda = sum(USD_Disbursement_Defl[Primary_DRR == "Primary"], na.rm = T), total_oda = sum(USD_Disbursement_Defl, na.rm = T)), by = .(Year, iso3, hazard_class, IndicatorScore)]
 
 crs_drr <- crs[!is.na(USD_Disbursement_Defl) & ((relevance != "None" & check == "No") | DRR != "No DRR component" | PurposeName == "Disaster Risk Reduction")]
 crs_drr[, drr_score := ifelse(relevance == "Major" | DRR == "Major DRR component" | PurposeName == "Disaster Risk Reduction", "Major", "Minor")]
